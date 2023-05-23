@@ -57,7 +57,7 @@ public class Minimax {
     }
 
     private int eval(Node node) {
-        int scoreTotal = node.getEtat().calculScore(joueur) - node.getEtat().calculScore(adversaire);
+        int scoreTotal = node.getJeu().calculScore(joueur) - node.getJeu().calculScore(adversaire);
         return scoreTotal;
     }
 

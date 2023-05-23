@@ -4,19 +4,19 @@ import java.util.List;
 public class Node {
     private List<Node> fils;
     private Action action;
-    private Puissance4 etat;
+    private Puissance4 jeu;
 
     public Node(Puissance4 puissance4, int profondeur) {
         fils = new ArrayList<>();
-        this.etat = puissance4;
+        this.jeu = puissance4;
 
         if(profondeur>0)
         for (int col = 0; col < 7; col++) {
-            if (etat.validerCoup(col)) {
-                Puissance4 newEtat = etat.clone();
-                newEtat.placerJeton(col);
-                newEtat.switchJoueur();
-                Node fils = new Node(newEtat, profondeur-1);
+            if (jeu.validerCoup(col)) {
+                Puissance4 newJeu = jeu.clone();
+                newJeu.placerJeton(col);
+                newJeu.switchJoueur();
+                Node fils = new Node(newJeu, profondeur-1);
                 fils.setAction(new Action(col));
                 addFils(fils);
             }
@@ -40,8 +40,8 @@ public class Node {
         this.action = action;
     }
 
-    public Puissance4 getEtat(){
-        return this.etat;
+    public Puissance4 getJeu(){
+        return this.jeu;
     }
 
 

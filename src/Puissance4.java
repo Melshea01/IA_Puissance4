@@ -27,82 +27,12 @@ public class Puissance4 {
     }
 
 
+    public char getJoueurActuel() {
+        return joueurActuel;
+    }
 
-    public void jouer(boolean XisIA, boolean OisIA) {
-        boolean jeuTermine = false;
-        Scanner scanner = new Scanner(System.in);
-        char playerSymbol;
-
-        /*
-        // Demander au joueur de choisir un pion
-        System.out.println("Choisissez un pion entre 'X' et 'O':");
-        while (true) {
-            String input = scanner.nextLine();
-            if (input.length() == 1) {
-                char symbol = input.charAt(0);
-                if (symbol == 'X' || symbol == 'O') {
-                    playerSymbol = symbol;
-                    break;
-                }
-            }
-            System.out.println("Veuillez choisir entre 'X' et 'O'.");
-        }
-
-        // Utiliser le symbole choisi par le joueur
-        this.joueurActuel = playerSymbol;
-        System.out.println("Vous avez choisi le pion " + playerSymbol);
-
-         */
-
-        //Initialisation Minimax
-        Minimax minimaxX = new Minimax(5,'X','O');
-        Minimax minimaxO= new Minimax(2,'O','X');
-
-        while (!jeuTermine) {
-            afficherGrille();
-
-            // Demander au joueur actuel de choisir une colonne
-            int colonne = 0;
-            if((joueurActuel=='X' && !XisIA) || (joueurActuel=='O' && !OisIA)){
-                System.out.print("Joueur " + joueurActuel + ", choisissez une colonne (1-" + colonnes + "): ");
-                colonne = scanner.nextInt() - 1;
-            }
-            else {
-                Minimax minimax = minimaxX;
-                if(joueurActuel=='O'){
-                    minimax = minimaxO;
-                }
-                Node node =new Node(this, minimax.getMaxProfondeur());
-                colonne = minimax.minimax(node).getColumn();
-
-            }
-
-
-            if (validerCoup(colonne)) {
-                // Jouer le coup et vérifier si le joueur a gagné
-                int ligne = placerJeton(colonne);
-                if (verifierGagnant(ligne, colonne)) {
-                    afficherGrille();
-                    System.out.println("Le joueur " + joueurActuel + " a gagné !");
-                    jeuTermine = true;
-                } else if (grilleRemplie()) {
-                    // Vérifier si la grille est remplie (match nul)
-                    afficherGrille();
-                    System.out.println("Match nul !");
-                    jeuTermine = true;
-                } else {
-                    // Passer au joueur suivant
-                    char joueurAdverse = (joueurActuel == 'X') ? 'O' : 'X';
-                    int score = calculScore(joueurActuel) - calculScore(joueurAdverse);
-                    System.out.println("score ligne = " + score);
-                    joueurActuel = (joueurActuel == 'X') ? 'O' : 'X';
-                }
-            } else {
-                System.out.println("Coup invalide, veuillez réessayer !");
-            }
-        }
-
-        scanner.close();
+    public char getAdversaireActuel() {
+        return (joueurActuel == 'X') ? 'O' : 'X';
     }
 
     public Puissance4 clone() {
@@ -118,18 +48,7 @@ public class Puissance4 {
         return clone;
     }
 
-    private void afficherGrille() {
-        for (int i = 0; i < lignes; i++) {
-            for (int j = 0; j < colonnes; j++) {
-                System.out.print(grille[i][j] + " ");
-            }
-            System.out.println();
-        }
-        for (int j = 0; j < colonnes; j++) {
-            System.out.print((j + 1) + " ");
-        }
-        System.out.println();
-    }
+
 
     public boolean validerCoup(int colonne) {
         return colonne >= 0 && colonne < colonnes && grille[0][colonne] == '-';
@@ -243,7 +162,7 @@ public class Puissance4 {
         return score;
     }
 
-    private boolean verifierGagnant(int ligne, int colonne) {
+    public boolean verifierGagnant(int ligne, int colonne) {
         char jeton = joueurActuel;
 
         // Vérifier les lignes horizontales
@@ -315,7 +234,7 @@ public class Puissance4 {
         return false;
     }
 
-    private boolean grilleRemplie() {
+    public boolean grilleRemplie() {
         for (int j = 0; j < colonnes; j++) {
             if (grille[0][j] == '-') {
                 return false;
@@ -324,56 +243,17 @@ public class Puissance4 {
         return true;
     }
 
-    public static void main(String[] args) {
-        Puissance4 jeu = new Puissance4(6, 7);
-        Scanner scanner = new Scanner(System.in);
-
-        // Afficher le menu
-        System.out.println("=== MENU ===");
-        System.out.println("1. Mode Joueur contre Joueur");
-        System.out.println("2. Mode Joueur contre Ordinateur");
-        System.out.println("3. Mode Ordinateur contre Ordinateur");
-        System.out.println("4. Quitter");
-
-        // Demander à l'utilisateur de choisir une option
-        int choice = 1;
-        while (true) {
-            System.out.print("Choisissez le mode de jeu : ");
-            if (scanner.hasNextInt()) {
-                choice = scanner.nextInt();
-                if (choice >= 1 && choice <= 4) {
-                    break;
-                }
+    public void afficherGrille() {
+        for (int i = 0; i < lignes; i++) {
+            for (int j = 0; j < colonnes; j++) {
+                System.out.print(grille[i][j] + " ");
             }
-            System.out.println("Veuillez entrer un choix valide (1-4).");
-            scanner.nextLine(); // Vider la ligne restante dans le scanner
+            System.out.println();
         }
-
-        // Traiter le choix de l'utilisateur
-        switch (choice) {
-            case 1:
-                // Mode Joueur contre Joueur
-                System.out.println("Mode Joueur contre Joueur sélectionné.");
-                jeu.jouer(false,false);
-                break;
-            case 2:
-                // Mode Joueur contre Ordinateur
-                System.out.println("Mode Joueur contre IA sélectionné.");
-                //TODO A modifier quand le mode joueur contre Ordinateur
-                jeu.jouer(false, true);
-                break;
-            case 3:
-                // Mode Ordinateur contre Ordinateur
-                System.out.println("Mode IA contre IA sélectionné.");
-                //TODO A modifier quand le mode Ordinateur vs Ordinateur
-                jeu.jouer(true, true);
-                break;
-            case 4:
-                // Quitter le jeu
-                System.out.println("Au revoir !");
-                break;
+        for (int j = 0; j < colonnes; j++) {
+            System.out.print((j + 1) + " ");
         }
-
+        System.out.println();
     }
 
 

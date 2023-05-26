@@ -57,7 +57,6 @@ public class UCTSearch {
 
         for (NodeUCT child : node.getNodeFils()) {
             double value = child.getQ() / child.getN() + c * Math.sqrt(2*Math.log(node.getN()) / child.getN());
-            System.out.println("Print value " + value);
             if (value > bestValue) {
                 bestValue = value;
                 bestChild = child;

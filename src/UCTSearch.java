@@ -1,35 +1,40 @@
+import UCT.Puissance4UCT;
+
 import java.util.List;
 import java.util.Random;
 
 public class UCTSearch {
-    private static final double Cp = Math.sqrt(2); // Exploration constant
-    private static final int DEFAULT_SIMULATION_COUNT = 1000; // Default number of simulations
+    private static final double c = Math.sqrt(2); // Exploration constant
+    private static final int DEFAULT_SIMULATION_COUNT = 2000; // Default number of simulations
 
     private Random random;
+    private char joueur;
 
-    public UCTSearch() {
+    public UCTSearch(char joueur) {
+        this.joueur = joueur;
         this.random = new Random();
     }
 
-    public Action uctSearch(Puissance4 initialJeu, int simulationCount) {
-        Node root = new Node(initialJeu,);
-        long endTime = System.currentTimeMillis() + simulationCount;
+    public ActionUCT uctSearch(Puissance4 initialJeu) {
+        NodeUCT racine = new NodeUCT(initialJeu,null);
 
-        while (System.currentTimeMillis() < endTime) {
-            Node selectedNode = treePolicy(root);
-            double delta = defaultPolicy(selectedNode.getJeu());
+        int counter = 0;
+        while (counter < DEFAULT_SIMULATION_COUNT) {
+            NodeUCT selectedNode = treePolicy(racine);
+            double delta = defaultPolicy(selectedNode);
             backup(selectedNode, delta);
+            counter+=1;
         }
 
-        return bestChild(root, 0).getAction();
+        return bestChild(racine, 0).getAction();
     }
 
-    private Node treePolicy(Node node) {
+    private NodeUCT treePolicy(NodeUCT node) {
         while (!node.isTerminal()) {
             if (!node.isFullyExpanded()) {
                 return expand(node);
             } else {
-                node = bestChild(node, Cp);
+                node = bestChild(node, c);
             }
         }
         return node;
@@ -41,8 +46,7 @@ public class UCTSearch {
 
         Puissance4 newJeu = node.getJeu().clone();
         newJeu.placerJeton(action.getColumn());
-        Node newChild = new Node(newJeu, action, node);
-        node.addFils(newChild);
+        NodeUCT newChild = new NodeUCT(newJeu, action);
 
         return newChild;
     }
@@ -51,8 +55,9 @@ public class UCTSearch {
         double bestValue = -Double.MAX_VALUE;
         Node bestChild = null;
 
-        for (Node child : node.getFils()) {
+        for (NodeUCT child : node.getNodeFils()) {
             double value = child.getQ() / child.getN() + c * Math.sqrt(2*Math.log(node.getN()) / child.getN());
+            System.out.println("Print value " + value);
             if (value > bestValue) {
                 bestValue = value;
                 bestChild = child;
@@ -62,14 +67,14 @@ public class UCTSearch {
         return bestChild;
     }
 
-    private double defaultPolicy(Puissance4 jeu) {
-        //Ajouter un atribu terminal dans jeu nan ???
-        while (!jeu.isTerminal()) {
-            List<Action> actions = jeu.getAvailableActions();
-            Action randomAction = actions.get(random.nextInt(actions.size()));
+    private double defaultPolicy(NodeUCT node) {
+        Puissance4 jeu = node.getJeu();
+        while (!node.isTerminal()) {
+            List<ActionUCT> actions = node.getAllActions();
+            ActionUCT randomAction = actions.get(random.nextInt(actions.size()));
             jeu.placerJeton(randomAction.getColumn());
         }
-        return jeu.getReward();
+        return jeu.calculScore(joueur);
     }
 
     private void backup(Node node, double delta) {
@@ -80,48 +85,3 @@ public class UCTSearch {
         }
     }
 }
-
-/*
-class Node {
-    private State state;
-    private Action action;
-    private Node parent;
-    private List<Node> children;
-    private int n;
-    private double q;
-
-    // Implémentez les getters et setters, ainsi que les autres méthodes nécessaires
-
-    public boolean isTerminal() {
-        // Implémentez la logique pour vérifier si le nœud est terminal
-        // Retournez true si c'est un état terminal, false sinon
-    }
-
-    public boolean isFullyExpanded() {
-        // Implémentez la logique pour vérifier si le nœud est entièrement développé (tous les enfants ont été explorés)
-        // Retournez true si le nœud est entièrement développé, false sinon
-    }
-
-    public List<Action> getUntriedActions() {
-        // Implémentez la logique pour obtenir les actions non testées à partir de l'état
-        // Retournez la liste des actions non testées
-    }
-
-    public void addChild(Node child) {
-        // Implémentez la logique pour ajouter un enfant au nœud
-    }
-
-    public List<Node> getChildren() {
-        // Implémentez la logique pour obtenir la liste des enfants du nœud
-        // Retournez la liste des enfants
-    }
-
-    public void incrementN() {
-        // Implémentez la logique pour incrémenter le compteur N du nœud
-    }
-
-    public void incrementQ(double delta) {
-        // Implémentez la logique pour incrémenter le compteur Q du nœud avec le delta donné
-    }
-}
-*/

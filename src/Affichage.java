@@ -1,5 +1,4 @@
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Affichage {
@@ -13,7 +12,8 @@ public class Affichage {
         System.out.println("1. Mode Joueur contre Joueur");
         System.out.println("2. Mode Joueur contre Ordinateur");
         System.out.println("3. Mode Ordinateur contre Ordinateur");
-        System.out.println("4. Quitter");
+        System.out.println("4. Mode Ordinateur contre Ordinateur avec Monte carlos");
+        System.out.println("5. Quitter");
 
         // Demander à l'utilisateur de choisir une option
         int choice = 1;
@@ -42,25 +42,33 @@ public class Affichage {
                 // Mode Joueur contre Ordinateur
                 System.out.println("Mode Joueur contre IA sélectionné.");
                 typeJoueur.put('X',1);
-                typeJoueur.put('O',2);
+                typeJoueur.put('O',4);
                 break;
             case 3:
                 // Mode Ordinateur contre Ordinateur
                 System.out.println("Mode IA contre IA sélectionné.");
-                typeJoueur.put('X',2);
+                typeJoueur.put('X',3);
                 typeJoueur.put('O',3);
-
                 break;
             case 4:
+                // Mode Joueur contre Ordinateur
+                System.out.println("Mode IA contre IA sélectionné 0 pour Monte Carlo et X minimax : ");
+                typeJoueur.put('X',2);
+                typeJoueur.put('O',4);
+                break;
+            case 5:
                 // Quitter le jeu
                 System.out.println("Au revoir !");
                 break;
         }
+        long startgame = System.currentTimeMillis();
         jouer(jeu, typeJoueur);
+        long endgame = System.currentTimeMillis();
+        System.out.println("Temps pour de la partie  :"+ (endgame-startgame) + "ms");
 
     }
 
-    public static void jouer(Puissance4 jeu ,HashMap<Character, Integer> typeJoueur) {
+    public static void jouer(Puissance4 jeu , HashMap<Character, Integer> typeJoueur) {
         boolean jeuTermine = false;
         Scanner scanner = new Scanner(System.in);
 
@@ -68,6 +76,8 @@ public class Affichage {
             jeu.afficherGrille();
             int colonne = 0;
             Node node;
+            long startTime;
+            long endTime;
             // Demander au joueur actuel de choisir une colonne
             switch (typeJoueur.get(jeu.getJoueurActuel())){
                 case 1:
@@ -75,15 +85,29 @@ public class Affichage {
                     colonne = scanner.nextInt() - 1;
                     break;
                 case 2 :
-                    Minimax minimax = new Minimax(5,jeu.getJoueurActuel(),jeu.getAdversaireActuel());
-                    node = new Node(jeu, minimax.getMaxProfondeur());
+                    startTime = System.currentTimeMillis();
+                    Minimax minimax = new Minimax(6,jeu.getJoueurActuel(),jeu.getAdversaireActuel());
+                    node = new Node(jeu);
                     colonne = minimax.minimax(node).getColumn();
+                    endTime = System.currentTimeMillis();
+                    System.out.println("Temps pour jouer un pion :"+ (endTime-startTime) + "ms");
                     break;
                 case 3 :
-                    AlphaBeta alphaBeta = new AlphaBeta(7,jeu.getJoueurActuel(),jeu.getAdversaireActuel());
-                    node = new Node(jeu, alphaBeta.getMaxProfondeur());
+                    startTime = System.currentTimeMillis();
+                    AlphaBeta alphaBeta = new AlphaBeta(8,jeu.getJoueurActuel(),jeu.getAdversaireActuel());
+                    node = new Node(jeu);
                     colonne = alphaBeta.alphaBeta(node).getColumn();
+                    endTime = System.currentTimeMillis();
+                    System.out.println("Temps pour jouer un pion :"+ (endTime-startTime) + "ms");
                     break;
+                case 4 :
+                    startTime = System.currentTimeMillis();
+                    UCTSearch uct = new UCTSearch(jeu.getJoueurActuel());
+                    colonne = uct.uctSearch(jeu).getColumn();
+                    endTime = System.currentTimeMillis();
+                    System.out.println("Temps pour jouer un pion :"+ (endTime-startTime) + "ms");
+                    break;
+
 
             }
 

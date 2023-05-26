@@ -10,6 +10,7 @@ public class AlphaBeta {
     }
 
     public Action alphaBeta(Node racine) {
+        racine.getFils();
         EvaluationAction evaluation = joueurMax(racine, maxProfondeur, Integer.MIN_VALUE, Integer.MAX_VALUE);
         return evaluation.getAction();
     }
@@ -32,20 +33,22 @@ public class AlphaBeta {
                 meilleurEval = evaluationAction.getEval();
                 meilleureAction = fils.getAction();
             }
-            alpha = Math.max(alpha, meilleurEval);
-            if (beta <= alpha) {
-                break;
+            if (meilleurEval >= beta) {
+                return new EvaluationAction(meilleurEval, meilleureAction);
             }
+            alpha = Math.max(alpha, meilleurEval);
         }
-
         return new EvaluationAction(meilleurEval, meilleureAction);
     }
 
     private EvaluationAction joueurMin(Node node, int profondeur, int alpha, int beta) {
-        if (node.estFeuille() || profondeur == 0) {
+        //Si on est sur une feuille ou que la profondeur est null, on retourne l'évaluation de la node
+        if(profondeur != 0)node.setFils();
+        if (node.estFeuille()) {
             return new EvaluationAction(eval(node), null);
         }
 
+        //Pire valeur possible pour nous
         int meilleurEval = Integer.MAX_VALUE;
         Action meilleureAction = null;
 
@@ -55,10 +58,11 @@ public class AlphaBeta {
                 meilleurEval = evaluationAction.getEval();
                 meilleureAction = fils.getAction();
             }
-            beta = Math.min(beta, meilleurEval);
-            if (beta <= alpha) {
-                break;
+
+            if (meilleurEval <= alpha) {
+                return new EvaluationAction(meilleurEval, meilleureAction);
             }
+            beta = Math.min(beta, meilleurEval);
         }
 
         return new EvaluationAction(meilleurEval, meilleureAction);

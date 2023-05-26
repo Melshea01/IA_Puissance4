@@ -6,25 +6,26 @@ public class Node {
     private Action action;
     private Puissance4 jeu;
 
-    public Node(Puissance4 puissance4, int profondeur) {
+    public Node(Puissance4 puissance4) {
         fils = new ArrayList<>();
         this.jeu = puissance4;
+    }
 
-        if(profondeur>0)
+    public List<Node> getFils() {
+
+            return this.fils;
+    }
+    public void setFils(){
         for (int col = 0; col < 7; col++) {
             if (jeu.validerCoup(col)) {
                 Puissance4 newJeu = jeu.clone();
                 newJeu.placerJeton(col);
                 newJeu.switchJoueur();
-                Node fils = new Node(newJeu, profondeur-1);
+                Node fils = new Node(newJeu);
                 fils.setAction(new Action(col));
                 addFils(fils);
             }
         }
-    }
-
-    public List<Node> getFils() {
-        return fils;
     }
 
 

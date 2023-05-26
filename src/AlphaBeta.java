@@ -20,7 +20,8 @@ public class AlphaBeta {
     }
 
     private EvaluationAction joueurMax(Node node, int profondeur, int alpha, int beta) {
-        if (node.estFeuille() || profondeur == 0) {
+        if(profondeur != 0)node.setFils();
+        if (node.estFeuille()) {
             return new EvaluationAction(eval(node), null);
         }
 

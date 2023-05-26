@@ -40,9 +40,9 @@ public class UCTSearch {
         return node;
     }
 
-    private Node expand(Node node) {
-        List<Action> untriedActions = node.getUntriedActions();
-        Action action = untriedActions.get(random.nextInt(untriedActions.size()));
+    private NodeUCT expand(NodeUCT node) {
+        List<ActionUCT> untriedActions = node.getUntriedActions();
+        ActionUCT action = untriedActions.get(random.nextInt(untriedActions.size()));
 
         Puissance4 newJeu = node.getJeu().clone();
         newJeu.placerJeton(action.getColumn());
@@ -51,9 +51,9 @@ public class UCTSearch {
         return newChild;
     }
 
-    private Node bestChild(Node node, double c) {
-        double bestValue = -Double.MAX_VALUE;
-        Node bestChild = null;
+    private NodeUCT bestChild(NodeUCT node, double c) {
+        double bestValue = Double.NEGATIVE_INFINITY;
+        NodeUCT bestChild = null;
 
         for (NodeUCT child : node.getNodeFils()) {
             double value = child.getQ() / child.getN() + c * Math.sqrt(2*Math.log(node.getN()) / child.getN());
@@ -76,7 +76,7 @@ public class UCTSearch {
         return jeu.calculScore(joueur);
     }
 
-    private void backup(Node node, double delta) {
+    private void backup(NodeUCT node, double delta) {
         while (node != null) {
             node.incrementN();
             node.incrementQ(delta);

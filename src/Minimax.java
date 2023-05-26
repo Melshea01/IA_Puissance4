@@ -19,7 +19,8 @@ public class Minimax {
     }
 
     private EvaluationAction joueurMax(Node node, int profondeur) {
-        if (node.estFeuille() || profondeur == 0) {
+        if(profondeur != 0)node.setFils();
+        if (node.estFeuille()) {
             return new EvaluationAction(eval(node), null);
         }
 
@@ -38,7 +39,8 @@ public class Minimax {
     }
 
     private EvaluationAction joueurMin(Node node, int profondeur) {
-        if (node.estFeuille() || profondeur == 0) {
+        if(profondeur != 0)node.setFils();
+        if (node.estFeuille()) {
             return new EvaluationAction(eval(node), null);
         }
 

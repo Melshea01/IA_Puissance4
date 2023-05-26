@@ -1,16 +1,16 @@
-import java.util.Scanner;
-
 public class Puissance4 {
     private char[][] grille;
     private int lignes;
     private int colonnes;
     private char joueurActuel;
+    private boolean terminated;
 
     public Puissance4(int lignes, int colonnes) {
         this.lignes = lignes;
         this.colonnes = colonnes;
         this.grille = new char[lignes][colonnes];
         this.joueurActuel = 'X';
+        this.terminated = false;
         initialiserGrille();
     }
 
@@ -171,6 +171,7 @@ public class Puissance4 {
             if (grille[ligne][j] == jeton) {
                 count++;
                 if (count == 4) {
+                    this.terminated = true;
                     return true;
                 }
             } else {
@@ -184,6 +185,7 @@ public class Puissance4 {
             if (grille[i][colonne] == jeton) {
                 count++;
                 if (count == 4) {
+                    this.terminated = true;
                     return true;
                 }
             } else {
@@ -208,6 +210,7 @@ public class Puissance4 {
             j--;
         }
         if (count >= 4) {
+            this.terminated = true;
             return true;
         }
 
@@ -228,6 +231,7 @@ public class Puissance4 {
             j++;
         }
         if (count >= 4) {
+            this.terminated = true;
             return true;
         }
 
@@ -240,6 +244,7 @@ public class Puissance4 {
                 return false;
             }
         }
+        this.terminated = true;
         return true;
     }
 
@@ -254,6 +259,13 @@ public class Puissance4 {
             System.out.print((j + 1) + " ");
         }
         System.out.println();
+    }
+
+    /*
+     * Si il y a un gagnant ou une partie nulle ou un gagnant, on renvoie terminated = true
+     * */
+    public boolean isTerminated(){
+        return terminated;
     }
 
 

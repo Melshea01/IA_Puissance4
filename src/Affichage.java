@@ -52,7 +52,7 @@ public class Affichage {
                 break;
             case 4:
                 // Mode Joueur contre Ordinateur
-                System.out.println("Mode IA contre IA sélectionné 0 pour Monte Carlo et X minimax : ");
+                System.out.println("Mode Jour contre Monte Carlo sélectionné. ");
                 typeJoueur.put('X',1);
                 typeJoueur.put('O',4);
                 break;
@@ -102,7 +102,7 @@ public class Affichage {
                     break;
                 case 4 :
                     startTime = System.currentTimeMillis();
-                    UCTSearch uct = new UCTSearch(jeu.getJoueurActuel());
+                    UCTSearch uct = new UCTSearch(jeu.getJoueurActuel(), jeu.getAdversaireActuel());
                     colonne = uct.uctSearch(jeu).getColumn();
                     endTime = System.currentTimeMillis();
                     System.out.println("Temps pour jouer un pion :"+ (endTime-startTime) + "ms");

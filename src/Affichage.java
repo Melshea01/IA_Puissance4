@@ -53,7 +53,7 @@ public class Affichage {
             case 4:
                 // Mode Joueur contre Ordinateur
                 System.out.println("Mode IA contre IA sélectionné 0 pour Monte Carlo et X minimax : ");
-                typeJoueur.put('X',2);
+                typeJoueur.put('X',1);
                 typeJoueur.put('O',4);
                 break;
             case 5:

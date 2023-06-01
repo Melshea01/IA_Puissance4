@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class UCTSearch {
     private static final double c = Math.sqrt(2); // Exploration constant
-    private static final int DEFAULT_SIMULATION_COUNT = 2000; // Default number of simulations
+    private static final int DEFAULT_SIMULATION_COUNT = 10000; // Default number of simulations
 
     private Random random;
     private char joueur;
@@ -46,6 +46,7 @@ public class UCTSearch {
 
         Puissance4 newJeu = node.getJeu().clone();
         newJeu.placerJeton(action.getColumn());
+        newJeu.switchJoueur();
         NodeUCT newChild = new NodeUCT(newJeu, action);
 
         return newChild;
@@ -71,7 +72,12 @@ public class UCTSearch {
         while (!node.isTerminal()) {
             List<ActionUCT> actions = node.getAllActions();
             ActionUCT randomAction = actions.get(random.nextInt(actions.size()));
-            jeu.placerJeton(randomAction.getColumn());
+            jeu = node.getJeu().clone();
+            int ligne = jeu.placerJeton(randomAction.getColumn());
+            jeu.verifierGagnant(ligne, randomAction.getColumn());
+            jeu.grilleRemplie();
+            jeu.switchJoueur();
+            node = new NodeUCT(jeu, randomAction);
         }
         return jeu.calculScore(joueur);
     }

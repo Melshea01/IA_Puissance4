@@ -4,13 +4,13 @@ import java.util.List;
 public class ActionUCT {
 
     private NodeUCT nodeParent;
-    private List<NodeUCT> nodeFils;
+    private NodeUCT node;
     private int column;
 
     public ActionUCT(int column, NodeUCT nodeParent) {
         this.column = column;
         this.nodeParent = nodeParent;
-        this.nodeFils = new ArrayList<>();
+        this.node = null;
     }
 
     public int getColumn() {
@@ -22,11 +22,11 @@ public class ActionUCT {
     }
 
     public void addNodeFils(NodeUCT fils){
-        this.nodeFils.add(fils);
+        this.node =fils;
     }
 
-    public List<NodeUCT> getNodeFils(){
-        return this.nodeFils;
+    public NodeUCT getNodeFils(){
+        return this.node;
     }
 
 }
